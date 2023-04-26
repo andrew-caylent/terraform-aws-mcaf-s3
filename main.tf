@@ -4,7 +4,7 @@ locals {
   lifecycle_rules                    = try(jsondecode(var.lifecycle_rule), var.lifecycle_rule)
   logging                            = try(var.logging.target_bucket != null, false) ? { create = true } : {}
   logging_permissions                = length(local.logging_permissions_source_buckets) > 0 ? { create = true } : {}
-  logging_permissions_source_buckets = try(var.logging.target_bucket == var.name, false) ? compact(concat(["arn:aws:s3:::${var.name}"], var.logging_source_bucket_arns)) : var.logging_source_bucket_arns
+  logging_permissions_source_buckets = try(var.logging.target_bucket == var.name, false) ? compact(concat(["arn:aws-us-gov:s3:::${var.name}"], var.logging_source_bucket_arns)) : var.logging_source_bucket_arns
   object_lock_configuration          = var.object_lock_mode != null ? { create : true } : {}
   policy                             = var.policy != null ? var.policy : null
   replication_configuration          = var.replication_configuration != null ? { create = true } : {}
@@ -16,8 +16,8 @@ data "aws_iam_policy_document" "ssl_policy" {
     actions = ["s3:*"]
     effect  = "Deny"
     resources = [
-      "arn:aws:s3:::${var.name}",
-      "arn:aws:s3:::${var.name}/*"
+      "arn:aws-us-gov:s3:::${var.name}",
+      "arn:aws-us-gov:s3:::${var.name}/*"
     ]
     condition {
       test     = "Bool"
@@ -40,7 +40,7 @@ data "aws_iam_policy_document" "logging_policy" {
       actions = ["s3:PutObject"]
       effect  = "Allow"
       resources = [
-        "arn:aws:s3:::${var.name}/*"
+        "arn:aws-us-gov:s3:::${var.name}/*"
       ]
       principals {
         type        = "Service"
