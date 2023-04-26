@@ -70,18 +70,18 @@ resource "aws_s3_bucket" "default" {
   tags                = var.tags
 }
 
-resource "aws_s3_bucket_acl" "default" {
-  count  = var.object_ownership_type == "ObjectWriter" ? 1 : 0
-  bucket = aws_s3_bucket.default.id
-  acl    = var.acl
-}
+# resource "aws_s3_bucket_acl" "default" {
+#   count  = var.object_ownership_type == "ObjectWriter" ? 1 : 0
+#   bucket = aws_s3_bucket.default.id
+#   acl    = var.acl
+# }
 
-resource "aws_s3_bucket_ownership_controls" "default" {
-  bucket = aws_s3_bucket.default.id
-  rule {
-    object_ownership = var.object_ownership_type
-  }
-}
+# resource "aws_s3_bucket_ownership_controls" "default" {
+#   bucket = aws_s3_bucket.default.id
+#   rule {
+#     object_ownership = var.object_ownership_type
+#   }
+# }
 
 resource "aws_s3_bucket_cors_configuration" "default" {
   for_each = local.cors_rule
