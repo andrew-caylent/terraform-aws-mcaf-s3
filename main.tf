@@ -6,7 +6,8 @@ locals {
   logging_permissions                = length(local.logging_permissions_source_buckets) > 0 ? { create = true } : {}
   logging_permissions_source_buckets = try(var.logging.target_bucket == var.name, false) ? compact(concat(["arn:aws-us-gov:s3:::${var.name}"], var.logging_source_bucket_arns)) : var.logging_source_bucket_arns
   object_lock_configuration          = var.object_lock_mode != null ? { create : true } : {}
-  policy                             = var.policy != null ? var.policy : null
+  #policy                             = var.policy != null ? var.policy : null
+  policy                             = var.policy != null ? replace(var.policy, "arn:aws:", "arn:aws-us-gov:") : null
   replication_configuration          = var.replication_configuration != null ? { create = true } : {}
 }
 
