@@ -56,13 +56,22 @@ data "aws_iam_policy_document" "logging_policy" {
   }
 }
 
+# data "aws_iam_policy_document" "combined" {
+#   source_policy_documents = compact([
+#     local.policy,
+#     data.aws_iam_policy_document.ssl_policy.json,
+#     data.aws_iam_policy_document.logging_policy.json
+#   ])
+# }
+
 data "aws_iam_policy_document" "combined" {
   source_policy_documents = compact([
-    local.policy,
-    data.aws_iam_policy_document.ssl_policy.json,
-    data.aws_iam_policy_document.logging_policy.json
+    replace(local.policy, "arn:aws", "arn:aws-us-gov"),
+    replace(data.aws_iam_policy_document.ssl_policy.json, "arn:aws", "arn:aws-us-gov"),
+    replace(data.aws_iam_policy_document.logging_policy.json, "arn:aws", "arn:aws-us-gov")
   ])
 }
+
 
 resource "aws_s3_bucket" "default" {
   bucket              = var.name
